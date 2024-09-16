@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('header') %>
+<body style="background: lightgray">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/quiz_history">Kembali</a>
+    </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <% if (messages.success) { %>
+                    <div class="alert alert-success" role="alert"><%- messages.success %></div>
+                <% } %>
+                
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+                <% } %>
+
+                <div class="card border-0 shadow rounded mb-3">
+                    <div class="card-body">
+                        <h1>Hasil Quiz</h1>
+            
+                            <ul>
+                                <% quizHistory.forEach(function(item) { %>
+                                    <li>
+                                        Soal: <%= item.soal %> <br>
+                                        <% if (item.quiz_jawaban === item.jawaban_benar) { %>
+                                            Jawaban Anda: <%= item.quiz_jawaban %> 
+                                            <% if (item.quiz_jawaban ==='A') { %>
+                                                <span style="color: green;"><%= item.pilihan_a %></span> <br>
+                                            <% }else if (item.quiz_jawaban ==='B') { %>
+                                                <span style="color: green;"><%= item.pilihan_b %></span> <br>
+                                            <% }else if (item.quiz_jawaban ==='C') { %>
+                                                <span style="color: green;"><%= item.pilihan_c %></span> <br>
+                                            <% }else { %>
+                                                <span style="color: green;"><%= item.pilihan_d %></span> <br>
+                                            <% } %>
+                                            <strong style="color: green;">Benar</strong>
+                                        <% } else { %>
+                                            Jawaban Anda: <%= item.quiz_jawaban %> 
+                                            <% if (item.quiz_jawaban ==='A') { %>
+                                                <span style="color: red;"><%= item.pilihan_a %></span> <br>
+                                            <% }else if (item.quiz_jawaban ==='B') { %>
+                                                <span style="color: red;"><%= item.pilihan_b %></span> <br>
+                                            <% }else if (item.quiz_jawaban ==='C') { %>
+                                                <span style="color: red;"><%= item.pilihan_c %></span> <br>
+                                            <% }else { %>
+                                                <span style="color: red;"><%= item.pilihan_d %></span> <br>
+                                            <% } %>
+                                            Jawaban Benar: <%= item.jawaban_benar %> 
+                                            <% if (item.jawaban_benar ==='A') { %>
+                                                <span style="color: green;"><%= item.pilihan_a %></span> <br>
+                                            <% }else if (item.jawaban_benar ==='B') { %>
+                                                <span style="color: green;"><%= item.pilihan_b %></span> <br>
+                                            <% }else if (item.jawaban_benar ==='C') { %>
+                                                <span style="color: green;"><%= item.pilihan_c %></span> <br>
+                                            <% }else { %>
+                                                <span style="color: green;"><%= item.pilihan_d %></span> <br>
+                                            <% } %>
+                                            <strong style="color: red;">Salah</strong>
+                                        <% } %>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        
+                            <a href="/quiz">Kembali ke daftar quiz</a>
+                    </div>
+                </div>
+            </div><!-- views/quiz/result.ejs -->
+            <!DOCTYPE html>
+            

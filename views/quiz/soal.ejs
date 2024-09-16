@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('header') %>
+<body style="background: lightgray">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/quiz">Kembali</a>
+        <div>
+            <strong>Waktu yang telah dihabiskan: </strong>
+            <span id="time_spent_display">0 menit 0 detik</span>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card border-0 shadow rounded mb-3">
+                    <div class="card-body">
+                        <% quizSoal.forEach(function(item, index) { %>
+                            <button type="button" id="btn-<%= index %>" class="btn btn-secondary mb-2" onclick="selectSoal(<%= index %>)">
+                                <%= index + 1 %>
+                            </button>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card border-0 shadow rounded mb-3">
+                    <div class="card-body">
+                        <form id="quizForm" action="/<%= initialRoute %>/<%= quizId %>/submit" method="post">
+                            <% quizSoal.forEach(function(item, index) { %>
+                                <div class="soal mb-3" id="soal-<%= index %>" style="display: <%= (index === 0) ? 'block' : 'none' %>;">
+                                    <h3>Soal <%= index + 1 %>: <%= item.soal %></h3>
+                                    <input type="hidden" name="soal_id[<%= item.id %>]" value="<%= item.id %>">
+                                    <ul>
+                                        <li><input type="radio" name="jawaban[<%= item.id %>]" value="A" onclick="setSelected(this, <%= index %>)"> A. <%= item.pilihan_a %></li>
+                                        <li><input type="radio" name="jawaban[<%= item.id %>]" value="B" onclick="setSelected(this, <%= index %>)"> B. <%= item.pilihan_b %></li>
+                                        <li><input type="radio" name="jawaban[<%= item.id %>]" value="C" onclick="setSelected(this, <%= index %>)"> C. <%= item.pilihan_c %></li>
+                                        <li><input type="radio" name="jawaban[<%= item.id %>]" value="D" onclick="setSelected(this, <%= index %>)"> D. <%= item.pilihan_d %></li>
+                                    </ul>
+                                </div>
+                                <input type="hidden" id="jumlah_waktu_soal-<%= index %>" name="jumlah_waktu_soal[<%= item.id %>]" value="0">
+                            <% }) %>
+                            <input type="hidden" id="current_soal_index" value="0">
+                            <input type="hidden" id="jumlah_waktu" name="jumlah_waktu" value="0">
+                            <br>
+                            <button type="button" id="prevButton" class="btn btn-secondary" onclick="navigate(-1)">Sebelumnya</button>
+                            <button type="button" id="nextButton" class="btn btn-primary" onclick="navigate(1)">Berikutnya</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary" style="display: none;">Kirim Jawaban</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    </script>
+
+    
+    <script>
+        let startTimes = {}; // Object to store start times for each question
+
+        function startTimer(index) {
+            startTimes[index] = Date.now(); // Record the start time for the question at 'index'
+            document.getElementById(`current_soal_index`).value = index; // Update hidden input field
+        }
+
+        function stopTimer(index) {
+            if (startTimes[index]) {
+                const endTime = Date.now();
+                const timeSpent = Math.floor((endTime - startTimes[index]) / 1000); // Calculate time spent in seconds
+                document.getElementById(`jumlah_waktu_soal-${index}`).value = timeSpent; // Update hidden input field
+                delete startTimes[index]; // Clear the start time for this question
+            }
+        }
+
+        let currentIndex = 0;
+        const soalElements = document.querySelectorAll('.soal');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const submitButton = document.getElementById('submitButton');
+        const buttons = document.querySelectorAll('.col-md-3 .btn');
+
+        function showSoal(index) {
+            const oldIndex = parseInt(document.getElementById('current_soal_index').value);
+            if (index >= 0 && index < soalElements.length) {
+                soalElements[currentIndex].style.display = 'none';
+                currentIndex = index;
+                soalElements[currentIndex].style.display = 'block';
+                stopTimer(oldIndex); // Stop timer for the current question
+                // Update button visibility
+                prevButton.style.display = currentIndex === 0 ? 'none' : 'inline-block';
+                nextButton.style.display = currentIndex === soalElements.length - 1 ? 'none' : 'inline-block';
+                submitButton.style.display = currentIndex === soalElements.length - 1 ? 'inline-block' : 'none';
+                startTimer(currentIndex); // Start timer for the new question
+            }
+        }
+
+        function navigate(direction) {
+            let newIndex = currentIndex + direction;
+            if (newIndex >= 0 && newIndex < soalElements.length) {
+                showSoal(newIndex);
+            }
+        }
+
+        function setSelected(radioButton, index) {
+            buttons.forEach((btn, i) => {
+                if(i === index) btn.classList.add('btn-success');
+            });
+        }
+        function selectSoal(index){
+            showSoal(index);
+        }
+
+        // Initialize button visibility
+        showSoal(currentIndex);
+        // Start timer for the first question
+        startTimer(0);
+        document.getElementById('quizForm').addEventListener('submit', function(event) {
+            const currentIndex = parseInt(document.getElementById('current_soal_index').value);
+            stopTimer(currentIndex); // Stop timer for the current question
+        });
+    </script>
+
+    <script>
+        // Simpan waktu saat halaman dibuka
+        let startTime = Date.now();
+    
+        // Fungsi untuk menghitung dan menampilkan jumlah waktu yang dihabiskan
+        function updateTimeSpent() {
+            let currentTime = Date.now();
+            let timeSpent = Math.floor((currentTime - startTime) / 1000); // Waktu dalam detik
+            
+            // Hitung menit dan detik dari waktu yang dihabiskan
+            let minutes = Math.floor(timeSpent / 60);
+            let seconds = timeSpent % 60;
+    
+            // Tampilkan waktu di elemen HTML
+            document.getElementById('time_spent_display').innerText = minutes + " menit " + seconds + " detik";
+    
+            // Set ke input hidden untuk dikirim ke server
+            document.getElementById('jumlah_waktu').value = timeSpent; // Simpan dalam detik
+        }
+    
+        // Perbarui waktu yang ditampilkan setiap detik
+        setInterval(updateTimeSpent, 1000);
+    </script>
+</body>
+</html>

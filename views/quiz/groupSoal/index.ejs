@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('header') %>
+    <!-- <style>
+        .select2-container {
+            width: 100% !important; /* Ensure full-width select */
+        }
+    </style> -->
+<body style="background: lightgray">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/quiz_group">Kembali</a>
+    </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <% if (messages.success) { %>
+                    <div class="alert alert-success" role="alert"><%- messages.success %></div>
+                <% } %>
+                
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+                <% } %>
+
+                <div class="card border-0 shadow rounded mb-3">
+                    <div class="card-body">
+                        <h2>Tambah Soal ke Quiz</h2>
+                        <% if(availableSoal.length){ %>
+                        <form action="/<%= initialRoute %>/<%= quizId %>/soal/add" method="post">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select name="soal_id" class="form-control">
+                                                <% availableSoal.forEach(function(soal) { %>
+                                                    <option value="<%= soal.id %>"><%= soal.soal %></option>
+                                                <% }) %>
+                                            </select></td>
+                                        <td>
+                                            <button type="submit" class="btn btn-md btn-success mb-3">Tambah</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                        <% }else{ %>
+                            <span>Tidak ada soal</span>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="card border-0 shadow rounded">
+                    <div class="card-body">
+                        
+                        <h1>Pengelolaan Soal dalam Quiz</h1>
+    
+                        <h2>Soal dalam Quiz</h2>
+                        <table class="table table-bordered">
+                            <tbody>
+                                <% quizSoal.forEach(function(soal, i) { %>
+                                    <tr>
+                                        <td><%= i+1 %> </td>
+                                        <td>
+                                            <%= soal.soal %> 
+                                        </td>
+                                        <td>
+                                            <a href="/<%= initialRoute %>/<%= quizId %>/soal/remove/<%= soal.id %>" class="btn btn-md btn-danger mb-3">Hapus</a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    </script>
+    <!-- Select2 JS -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Select quiz group(s)",
+                allowClear: true
+            });
+        });
+    </script> -->
+    
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('header') %>
+<body style="background: lightgray">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/quiz_group">Kembali</a>
+    </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <% if (messages.success) { %>
+                    <div class="alert alert-success" role="alert"><%- messages.success %></div>
+                <% } %>
+                
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+                <% } %>
+
+                <div class="card border-0 shadow rounded mb-3">
+                    <div class="card-body">
+                        <h1>Hasil Quiz</h1>
+            
+                            <ul>
+                                <% quizHistory.forEach(function(item) { %>
+                                    <li>
+                                        Soal: <%= item.soal %> <br>
+                                        Jawaban Anda: <%= item.quiz_jawaban %> <br>
+                                        Jawaban Benar: <%= item.jawaban_benar %> <br>
+                                        <% if (item.quiz_jawaban === item.jawaban_benar) { %>
+                                            <strong style="color: green;">Benar</strong>
+                                        <% } else { %>
+                                            <strong style="color: red;">Salah</strong>
+                                        <% } %>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        
+                            <a href="/quiz">Kembali ke daftar quiz</a>
+                    </div>
+                </div>
+            </div><!-- views/quiz/result.ejs -->
+            <!DOCTYPE html>
+            

@@ -1,0 +1,91 @@
+<!-- posts/index.ejs -->
+<table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col" width="7%">#</th>
+        <% headers.forEach(function(header) { %>
+          <th scope="col"><%= header.text %></th>
+        <% }); %>
+        <% if (actions.table.enabled) { %>
+            <th scope="col" width="15%">Actions</th>
+        <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% if(data.length){ %>
+        <% data.forEach(function(row, i) { %>
+          <tr>
+            <th scope="row" class="text-center"><%= (i+1) %></th>
+            <% headers.forEach(function(header) { %>
+              <% if (header.link) { %>
+                <td>
+                  <a href="/<%= header.uri %>/<%= row[header.uriId] %>/<%= header.uriLast %>" class="btn btn-sm btn-primary"><%= row[header.value] %></a>
+                </td>
+              <% }else{ %>
+                <td><%= row[header.value] %></td>
+              <% } %>
+            <% }); %>
+            <% if (actions.table.enabled) { %>
+              <td class="text-center">
+                <% if (actions.table.valueDisabled) { %>
+                  <% if (actions.table.edit && row[actions.table.valueDisabled] == actions.table.setValueDisabled) { %>
+                    <a href="/<%= actions.table.route %>/edit/<%= row[actions.table.dataId] %>" class="btn btn-sm btn-primary">EDIT</a>
+                  <% } %>
+                  <% if (actions.table.delete && row[actions.table.valueDisabled] == actions.table.setValueDisabled) { %>
+                    <a onclick="return confirm('Are You sure?')" href="/<%= actions.table.route %>/delete/<%= row[actions.table.dataId] %>" class="btn btn-sm btn-danger">HAPUS</a>
+                  <% } %>
+                <% }else{ %>
+                  <% if (actions.table.edit) { %>
+                    <a href="/<%= actions.table.route %>/edit/<%= row[actions.table.dataId] %>" class="btn btn-sm btn-primary">EDIT</a>
+                  <% } %>
+                  <% if (actions.table.delete) { %>
+                    <a onclick="return confirm('Are You sure?')" href="/<%= actions.table.route %>/delete/<%= row[actions.table.dataId] %>" class="btn btn-sm btn-danger">HAPUS</a>
+                  <% } %>
+                <% } %>
+
+                <% if (actions.table.kerjakan) { %>
+                  <a onclick="return confirm('Are You sure?')" href="/<%= actions.table.route %>/<%= row[actions.table.dataId] %>/kerjakan" class="btn btn-sm btn-danger">Mulai</a>
+                <% } %>
+                <% if (actions.table.history) { %>
+                  <a href="/<%= actions.table.route %>/<%= row[actions.table.dataId] %>/history" class="btn btn-sm btn-danger">History</a>
+                <% } %>
+              </td>
+            <% } %>
+          </tr>
+        <% }); %>
+      <% }else{ %>
+        <tr>
+          <td colspan="<%= 1+headers.length + (actions.table.enabled ? 1 : 0) %>">
+            <div class="alert alert-danger" role="alert">
+              Data Tidak Ditemukan !
+            </div>
+          </td>
+        </tr>
+      <% } %>    
+    </tbody>
+  </table>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <% if (pagination.prev) { %>
+        <li class="page-item">
+          <a class="page-link" href="<%= pagination.prev %>" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+      <% } %>
+      <% for (var i = 1; i <= pagination.totalPages; i++) { %>
+        <li class="page-item <%= i === pagination.currentPage ? 'active' : '' %>">
+          <a class="page-link" href="<%= pagination.baseUrl %>?page=<%= i %>"><%= i %></a>
+        </li>
+      <% } %>
+      <% if (pagination.next) { %>
+        <li class="page-item">
+          <a class="page-link" href="<%= pagination.next %>" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
