@@ -65,7 +65,7 @@ router.post('/:quizId/submit', async (req, res) => {
         }
         await postModel.updateQuizFinish(quizId, {date_finish: new Date(), jumlah_waktu : quiz_jumlah_waktu});
         // Redirect ke halaman hasil quiz atau ringkasan
-        res.redirect(`/${initialRoute}/${quizId}/result`);
+        res.redirect(`/quiz_history/${quizId}/history`);
     } catch (err) {
         flashMessage.setFlash(req, 'error', "Tidak ada data");
         res.redirect(`/${initialRoute}`);
