@@ -15,6 +15,7 @@ let initialState = {
 // Route untuk menampilkan daftar soal dalam quiz
 router.get('/:quizId/soal', async (req, res) => {
     const quizId = req.params.quizId;
+    const quizIdFil = req.query.fil_quiz_id || [];
 
     try {
         // Ambil soal-soal yang sudah terkait dengan quiz
@@ -22,10 +23,12 @@ router.get('/:quizId/soal', async (req, res) => {
         const quizSoal = await postModel.getSoalByQuizId(quizId);
 
         // Ambil semua soal yang belum ada dalam quiz untuk ditambahkan
-        const availableSoal = await postModel.getAvailableSoalForQuiz(quizId);
+        // const fillarr = quizIdFil ? quizIdFil.split(",").map(Number) : [];
+        const availableSoal = await postModel.getAvailableSoalForQuiz(quizId, quizIdFil);
 
         res.render('quiz/groupSoal', {
             initialRoute:initialRoute,
+            quizIdFil:quizIdFil,
             quizId: quizId,
             quizsGroup: quizs,
             quizSoal: quizSoal,

@@ -56,7 +56,7 @@ module.exports = {
     getQuizHistory: function(quizId) {
         return new Promise((resolve, reject) => {
             connection.query(
-                `SELECT quiz_history.*,  soal_test.soal, soal_test.pilihan_a, soal_test.pilihan_b, soal_test.pilihan_c, soal_test.pilihan_d, soal_test.jawaban_benar
+                `SELECT quiz_history.*,  soal_test.soal, soal_test.pilihan_a, soal_test.pilihan_b, soal_test.pilihan_c, soal_test.pilihan_d, soal_test.jawaban_benar, soal_test.keterangan
                  FROM quiz_history 
                  JOIN soal_test ON quiz_history.soal_id = soal_test.id
                  WHERE quiz_history.quiz_id = ?`, 

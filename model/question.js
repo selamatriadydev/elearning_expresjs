@@ -5,9 +5,26 @@ module.exports = {
         connection.query('SELECT COUNT(*) AS total FROM soal_test', callback);
     },
     
-    getAllPosts: function(limit, offset, callback) {
-        connection.query(`SELECT soal_test.*, jenis_soal.jenis FROM soal_test join jenis_soal on jenis_soal.id=soal_test.jenis_soal_id  ORDER BY id asc LIMIT ? OFFSET ?`, [limit, offset], callback);
+    getAllPosts: function(filter, limit, offset, callback) {
+        let condition = '';
+        let binVar = [limit, offset];
+        
+        if (filter) {
+            condition = `WHERE soal_test.soal LIKE ?`;
+            filter = `%${filter}%`; // Add the wildcards around the filter for LIKE
+            binVar = [filter, limit, offset];
+        }
+        
+        const query = `SELECT soal_test.*, jenis_soal.jenis 
+                       FROM soal_test 
+                       JOIN jenis_soal ON jenis_soal.id = soal_test.jenis_soal_id 
+                       ${condition} 
+                       ORDER BY soal_test.id ASC 
+                       LIMIT ? OFFSET ?`;
+        
+        connection.query(query, binVar, callback);
     },
+    
     getJenisSoal: function() {
         return new Promise((resolve, reject) => {
             connection.query("SELECT * FROM jenis_soal WHERE status='aktif' ORDER BY jenis DESC", (err, result) => {

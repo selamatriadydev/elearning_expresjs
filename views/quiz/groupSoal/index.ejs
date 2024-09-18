@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <%- include('header') %>
-    <!-- <style>
+    <style>
         .select2-container {
             width: 100% !important; /* Ensure full-width select */
         }
-    </style> -->
+    </style>
 <body style="background: lightgray">
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="/quiz_group">Kembali</a>
@@ -21,11 +21,39 @@
                     <div class="alert alert-danger" role="alert"><%- messages.error %></div>
                 <% } %>
 
+                
+                <div class="card border-0 shadow rounded mb-3">
+                    <div class="card-body">
+                        <h2>Filter soal untuk Tambah</h2>
+                        <% if(quizsGroup.length){ %>
+                        <form action="/<%= initialRoute %>/<%= quizId %>/soal" method="get">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td width="90%">
+                                            <select name="fil_quiz_id" class="form-control select2-container" multiple>
+                                                <% quizsGroup.forEach(function(soal) { %>
+                                                    <option value="<%= soal.id %>"><%= soal.title %></option>
+                                                <% }) %>
+                                            </select>
+                                        <td>
+                                            <button type="submit" class="btn btn-md btn-success mb-3">Filter</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                        <% }else{ %>
+                            <span>Tidak ada soal</span>
+                        <% } %>
+                    </div>
+                </div>
                 <div class="card border-0 shadow rounded mb-3">
                     <div class="card-body">
                         <h2>Tambah Soal ke Quiz</h2>
                         <% if(availableSoal.length){ %>
                         <form action="/<%= initialRoute %>/<%= quizId %>/soal/add" method="post">
+                            <input type="hidden" name="quizIdFil" value="<%=quizIdFil %>">
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
@@ -77,6 +105,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function() {
+  $('.select2-container').select2({
+    // data: dataBase,
+    placeholder: 'Start typing to add subjects...',
+    width: 'style',
+    multiple: true,
+    tags: true,
+    createTag: function(tag) {
+      return {
+        id: tag.term,
+        text: tag.term,
+        isNew: true
+      };
+    },
+    tokenSeparators: [',', '.']
+  })
+  $(document).on("select2:select select2:unselect", '.select2-container', function(e) {
+    var allSelected = $('.select2-container').val();
+    console.log('All selected ' + allSelected);
+
+    var lastModified = e.params.data.id;
+    console.log('Last Modified ' + lastModified);
+
+    var dbIdArray = dataBase.map((i) => i.id.toString());
+    var allTagged = $('.select2-container').val().filter((i) => !(dbIdArray.indexOf(i) > -1))
+    console.log('All Tagged ' + allTagged);
+  });
+});
     </script>
     <!-- Select2 JS -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>

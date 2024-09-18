@@ -28,9 +28,24 @@
                 <% if (messages.error) { %>
                     <div class="alert alert-danger" role="alert"><%- messages.error %></div>
                 <% } %>
-
                 <div class="card border-0 shadow rounded">
                     <div class="card-body">
+
+                        <form action="/<%= initialRoute %>" method="get">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td width="80%">
+                                            <input type="text" name="filter" class="form-control">
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-md btn-success mb-3">Filter</button>
+                                            <a href="<%= initialRoute %>" class="btn btn-md btn-danger mb-3">Reset</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
                         <% if (actions.add) { %>
                             <a href="<%= actions.route %>/create" class="btn btn-md btn-success mb-3">TAMBAH</a>
                         <% } %>

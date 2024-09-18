@@ -35,21 +35,23 @@ module.exports = {
             );
         });
     },
-    getAvailableSoalForQuiz: function(quizId) {
+    getAvailableSoalForQuiz: function(quizId, filter = []) {
         return new Promise((resolve, reject) => {
-            connection.query(
-                `SELECT * FROM soal_test 
-                 WHERE id NOT IN (SELECT soal_id FROM quiz_soal WHERE quiz_id = ?)`, 
-                [quizId], 
-                (err, result) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                    resolve(result);
+            let params = [quizId];
+            if (filter.length > 0) {
+                params.push(filter); // Menambahkan array filter ke parameter query
+            }
+            // let query = `SELECT * FROM soal_test WHERE id NOT IN (SELECT soal_id FROM quiz_soal WHERE quiz_id = ?)`;
+            let query = `SELECT * FROM soal_test WHERE id NOT IN (SELECT soal_id FROM quiz_soal WHERE quiz_id IN (?))`;
+            connection.query(query, params, (err, result) => {
+                if (err) {
+                    return reject(err);
                 }
-            );
+                resolve(result);
+            });
         });
     },
+    
 
     // Menambahkan soal ke quiz
     addSoalToQuiz: function(quizId, soalId) {

@@ -23,6 +23,7 @@ router.get('/', function (req, res, next) {
       {'text': 'Soal', 'value': 'soal'},
       {'text': 'Jenis', 'value': 'jenis'}
     ];
+    const filter = req.query.filter || '';
     var actions = {add : true, route:initialRoute, table : {enabled: true, dataId: 'id', route:initialRoute, edit : true, delete : true}};
   
     paginate(req, postModel.getTotalCount, initialRoute, function(err, paginationData) {
@@ -37,7 +38,7 @@ router.get('/', function (req, res, next) {
         });
       } else {
         const pagination = paginationData;
-        postModel.getAllPosts(pagination.limit, pagination.offset, function(err, rows) {
+        postModel.getAllPosts(filter,pagination.limit, pagination.offset, function(err, rows) {
           if (err) {
             flashMessage.setFlash(req, 'error', err);
             res.render('questions', {
